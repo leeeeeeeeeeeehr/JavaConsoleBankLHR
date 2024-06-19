@@ -40,7 +40,7 @@ public class Account {
 	public void showAccount() {
 		System.out.println("계좌 번호: " + this.accNumber);
 		System.out.println("고객 이름: " + this.name);
-		System.out.println("잔고: " + this.balance);
+		System.out.println("잔고: " + this.balance + "원");
 	}
 	
 

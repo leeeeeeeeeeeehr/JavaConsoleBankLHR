@@ -17,7 +17,7 @@ public class BankingSystemMain {
 			switch (choice) {
 			case ICustomDefine.MAKE:
 				AccountManager.makeAccount();
-				System.out.println("******************\n");
+				System.out.println();
 				break;
 			case ICustomDefine.DEPOSIT:
 				AccountManager.depositMoney();
@@ -27,7 +27,7 @@ public class BankingSystemMain {
 				break;
 			case ICustomDefine.INQUIRE:
 				AccountManager.showAccInfo();
-				System.out.println("******************\n");
+				System.out.println();
 				break;
 			case ICustomDefine.EXIT:
 				System.out.println("\n=== 프로그램 종료 ===");
