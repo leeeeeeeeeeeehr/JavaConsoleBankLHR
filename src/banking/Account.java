@@ -8,9 +8,6 @@ public class Account {
 	private int balance;
 	
 	// 생성자
-	public Account() {
-		
-	}
 	public Account(String accNumber, String name, int balance) {
 		this.accNumber = accNumber;
 		this.name = name;

@@ -6,7 +6,7 @@ import java.util.Scanner;
 전반적인 기능을 구현한다. */
 public class AccountManager {
 	
-	// Account 인스턴스를 저장할 수 있는 배열
+		// Account 인스턴스를 저장할 수 있는 배열
 		public static Account accArr[] = new Account[50];
 		// 인덱스로 사용할 변수
 		public static int accCnt = 0;
@@ -27,7 +27,7 @@ public class AccountManager {
 			System.out.println("\n****** 신규 계좌 개설 ******\n");
 			
 			Scanner scanner = new Scanner(System.in);
-			String accNum, name, grade;
+			String accNum, name, inGrade;
 			int choice, bal, rate;
 			
 			System.out.println("[계좌 선택]");
@@ -55,10 +55,13 @@ public class AccountManager {
 				NormalAccount normal = new NormalAccount(accNum, name, bal, rate);
 				// 인스턴스 배열에 추가
 				accArr[accCnt++] = normal;
+				
+				
 			}
 			else if (choice == 2) {
 				System.out.print("신용 등급 (A, B, C 중): ");
-				grade = scanner.nextLine();
+				inGrade = scanner.nextLine();
+				char grade = inGrade.charAt(0);
 
 				// 입력받은 정보를 통해 인스턴스 생성
 				HighCreditAccount high = new HighCreditAccount(accNum, name, bal, rate, grade);
@@ -68,7 +71,7 @@ public class AccountManager {
 			System.out.println("\n*** 계좌가 개설되었습니다. ***");
 		}
 		
-		// 입금 => 금액은 무조건 0원 이상으로, 금액에 대한 오류 검사 X
+		// 입금
 		public static void depositMoney() {
 			System.out.println("\n********** 입  금 **********");
 			
@@ -98,14 +101,11 @@ public class AccountManager {
 					}
 					else {
 						if (accArr[i] instanceof NormalAccount) {
-							accArr[i].setBalance(accArr[i].getBalance() + depo);
 							((NormalAccount) accArr[i]).normalCalculate(depo);
 						}
 						else if (accArr[i] instanceof HighCreditAccount) {
-							accArr[i].setBalance(accArr[i].getBalance() + depo);
 							((HighCreditAccount) accArr[i]).highCalculate(depo);
 						}
-						System.out.println("********* 입금 완료 *********");
 					}
 				}
 			}
@@ -116,7 +116,7 @@ public class AccountManager {
 			System.out.println();
 		}
 		
-		// 출금 => 금액은 무조건 0원 이상으로, 금액에 대한 오류 검사 X
+		// 출금
 		public static void withdrawMoney() {
 			System.out.println("\n********** 출  금 **********");
 			
@@ -138,6 +138,7 @@ public class AccountManager {
 					
 					System.out.print("출금할 금액: ");
 					int draw = scanner.nextInt();
+					scanner.nextLine();
 					
 					if (draw <= 0) {
 						System.out.println("[예외] 금액을 잘못 입력하였습니다.");
