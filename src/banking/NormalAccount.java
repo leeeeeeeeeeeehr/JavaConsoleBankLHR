@@ -25,7 +25,9 @@ public class NormalAccount extends Account {
 	
 	@Override
 	public void showAccount() {
-		super.showAccount();
+		System.out.println("계좌 번호: " + getNumber());
+		System.out.println("고객 이름: " + getName());
+		System.out.println("잔고: " + getBalance() + "원");
 		System.out.println("기본 이자: " + this.rate + "%");
 	}
 }

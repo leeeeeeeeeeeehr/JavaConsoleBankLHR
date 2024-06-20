@@ -1,5 +1,7 @@
 package banking;
 
+import java.util.HashSet;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /* 컨트롤 클래스,
@@ -10,7 +12,7 @@ public class AccountManager {
 		public static Account accArr[] = new Account[50];
 		// 인덱스로 사용할 변수
 		public static int accCnt = 0;
-		
+	
 		// 메뉴 출력
 		public static void showMenu() {
 			System.out.println("============ Menu ============");
@@ -55,8 +57,6 @@ public class AccountManager {
 				NormalAccount normal = new NormalAccount(accNum, name, bal, rate);
 				// 인스턴스 배열에 추가
 				accArr[accCnt++] = normal;
-				
-				
 			}
 			else if (choice == 2) {
 				System.out.print("신용 등급 (A, B, C 중): ");
@@ -91,26 +91,33 @@ public class AccountManager {
 				if (accArr[i].getNumber().equals(accNum)) {
 					isAcc = true;
 					
-							
-					System.out.print("입금할 금액: ");
-					int depo = scanner.nextInt();
-					scanner.nextLine();
-									
-					if (depo <= 0) {
-						System.out.println("[예외] 금액을 잘못 입력하였습니다.");
+					try {
+						System.out.print("입금할 금액: ");
+						int depo = scanner.nextInt();
+						scanner.nextLine();
+						
+						if (depo <= 0) {
+							System.out.println("\n[예외] 금액을 잘못 입력하였습니다.");
+						}
+						else if (depo % 500 != 0) {
+							System.out.println("\n[예외] 입금은 500원 단위로 가능합니다.");
+						}
+						else {
+							if (accArr[i] instanceof NormalAccount) {
+								((NormalAccount) accArr[i]).normalCalculate(depo);
+							}
+							else if (accArr[i] instanceof HighCreditAccount) {
+								((HighCreditAccount) accArr[i]).highCalculate(depo);
+							}
+						}
 					}
-					else {
-						if (accArr[i] instanceof NormalAccount) {
-							((NormalAccount) accArr[i]).normalCalculate(depo);
-						}
-						else if (accArr[i] instanceof HighCreditAccount) {
-							((HighCreditAccount) accArr[i]).highCalculate(depo);
-						}
+					catch (InputMismatchException e) {
+						System.out.println("\n[예외] 금액만 입력할 수 있습니다.");
 					}
 				}
 			}
 			if (!isAcc) {
-				System.out.println("**** 존재하지 않는 계좌입니다. ****");
+				System.out.println("\n**** 존재하지 않는 계좌입니다. ****");
 			}
 			
 			System.out.println();
@@ -136,17 +143,42 @@ public class AccountManager {
 				if (accArr[i].getNumber().equals(accNum)) {
 					isAcc = true;
 					
-					System.out.print("출금할 금액: ");
-					int draw = scanner.nextInt();
-					scanner.nextLine();
-					
-					if (draw <= 0) {
-						System.out.println("[예외] 금액을 잘못 입력하였습니다.");
-					}
-					else {
-						accArr[i].setBalance(accArr[i].getBalance() - draw);
+					try {
+						System.out.print("출금할 금액: ");
+						int draw = scanner.nextInt();
+						scanner.nextLine();
 						
-						System.out.println("********* 출금 완료 *********");					
+						if (draw <= 0) {
+							System.out.println("\n[예외] 금액을 잘못 입력하였습니다.");
+						}
+						else if (draw % 1000 != 0) {
+							System.out.println("\n[예외] 출금은 1000원 단위로 가능합니다.");
+						}
+						else if (draw > accArr[i].getBalance()) {
+							System.out.println("\n##### 잔고가 부족합니다. #####");
+							System.out.println("### 금액 전체를 출금할까요? ###");
+							System.out.print("\nYes / No >>> ");
+							
+							String YoN = scanner.nextLine();
+							
+							if (YoN.equalsIgnoreCase("y")) {
+								accArr[i].setBalance(accArr[i].getBalance() - accArr[i].getBalance());
+								
+								System.out.println("\n#### 전체 금액 출금 완료 ####");
+								System.out.println("#### 현재 잔고는 0원입니다. ####");
+							}
+							else if (YoN.equalsIgnoreCase("n")) {
+								
+							}
+						}
+						else {
+							accArr[i].setBalance(accArr[i].getBalance() - draw);
+							
+							System.out.println("********* 출금 완료 *********");					
+						}
+					}
+					catch (InputMismatchException e) {
+						System.out.println("\n[예외] 금액만 입력할 수 있습니다.");
 					}
 				}
 			}

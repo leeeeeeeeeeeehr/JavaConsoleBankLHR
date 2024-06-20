@@ -19,16 +19,18 @@ public class HighCreditAccount extends Account {
 		
 		switch (Character.toUpperCase(grade)) {
 		case ICustomDefine.gradeA: 
-			highRate = 7 / 100.0;
+			highRate = 0.07;
 			break;
 		case ICustomDefine.gradeB:
-			highRate = 4 / 100.0;
+			highRate = 0.04;
 			break;
 		case ICustomDefine.gradeC:
-			highRate = 2 / 100.0;
+			highRate = 0.02;
 			break;
+		default:
+			System.out.println("\n[예외] A, B, C만 입력할 수 있습니다.");
 		}
-		
+
 		double newBalance =
 				Math.floor(getBalance() + (getBalance() * normalRate) + (getBalance() * highRate) + depo);
 		// 계산한 금액으로 잔액 초기화
@@ -39,7 +41,9 @@ public class HighCreditAccount extends Account {
 	
 	@Override
 	public void showAccount() {
-		super.showAccount();
+		System.out.println("계좌 번호: " + getNumber());
+		System.out.println("고객 이름: " + getName());
+		System.out.println("잔고: " + getBalance() + "원");
 		System.out.println("기본 이자: " + this.rate + "%");
 		System.out.println("신용 등급: " + Character.toUpperCase(this.grade) + "등급");
 	}
