@@ -9,23 +9,30 @@ import java.util.Scanner;
 public class AccountManager {
 	
 		// Account 인스턴스를 저장할 수 있는 배열
-		public static Account accArr[] = new Account[50];
+//		public static Account accArr[] = new Account[50];
 		// 인덱스로 사용할 변수
-		public static int accCnt = 0;
+//		public static int accCnt = 0;
+	
+		HashSet<Account> hashSet;
+		
+		public AccountManager() {
+			hashSet = new HashSet<Account>(); 
+		}
 	
 		// 메뉴 출력
-		public static void showMenu() {
+		public void showMenu() {
 			System.out.println("============ Menu ============");
 			System.out.print("1. 계좌 개설  ");
 			System.out.print("2. 입  금  ");
 			System.out.println("3. 출  금  ");
-			System.out.print("4. 전체 계좌 정보    ");
-			System.out.println("5. 프로그램 종료");
+			System.out.print("4. 계좌 정보 출력   ");
+			System.out.println("5. 계좌 정보 삭제   ");
+			System.out.println("6. 프로그램 종료");
 			System.out.print("\n메뉴 선택 >>> ");
 		}
 		
 		// 계좌 개설
-		public static void makeAccount() {
+		public void makeAccount() {
 			System.out.println("\n****** 신규 계좌 개설 ******\n");
 			
 			Scanner scanner = new Scanner(System.in);
@@ -55,8 +62,27 @@ public class AccountManager {
 			if (choice == 1) {
 				// 입력받은 정보를 통해 인스턴스 생성
 				NormalAccount normal = new NormalAccount(accNum, name, bal, rate);
-				// 인스턴스 배열에 추가
-				accArr[accCnt++] = normal;
+				// set에 추가하기 전에 중복인지 확인
+				for (Account acc : hashSet) {
+					if (acc.equals(normal)) {
+						System.out.println("\n### 중복 계좌가 발견되었습니다. ###");
+						System.out.println("#### 새롭게 저장하시겠습니까? ####");
+						System.out.print("\nYes / No >>> ");
+						
+						String YoN = scanner.nextLine();
+						
+						if (YoN.equalsIgnoreCase("y")) {
+							// 중복 계좌있으면 삭제 후 새로운 계좌 추가 (덮어쓰기와 같은 기능)
+							hashSet.remove(acc);
+							hashSet.add(normal);
+							System.out.println("### 새로운 계좌 정보가 업데이트 됐습니다. ###");
+						}
+						else if (YoN.equalsIgnoreCase("n")) {
+							System.out.println("### 기존의 계좌 정보가 유지됩니다. ###");
+						}
+					}
+				}
+				hashSet.add(normal);
 			}
 			else if (choice == 2) {
 				System.out.print("신용 등급 (A, B, C 중): ");
@@ -66,13 +92,14 @@ public class AccountManager {
 				// 입력받은 정보를 통해 인스턴스 생성
 				HighCreditAccount high = new HighCreditAccount(accNum, name, bal, rate, grade);
 				// 인스턴스 배열에 추가
-				accArr[accCnt++] = high;
+//				accArr[accCnt++] = high;
+				hashSet.add(high);
 			}
 			System.out.println("\n*** 계좌가 개설되었습니다. ***");
 		}
 		
 		// 입금
-		public static void depositMoney() {
+		public void depositMoney() {
 			System.out.println("\n********** 입  금 **********");
 			
 			Scanner scanner = new Scanner(System.in);
@@ -87,8 +114,8 @@ public class AccountManager {
 			boolean isAcc = false;
 			
 			
-			for (int i = 0; i < accCnt; i++) {
-				if (accArr[i].getNumber().equals(accNum)) {
+			for (Account acc : hashSet) {
+				if (acc.getNumber().equals(accNum)) {
 					isAcc = true;
 					
 					try {
@@ -103,11 +130,11 @@ public class AccountManager {
 							System.out.println("\n[예외] 입금은 500원 단위로 가능합니다.");
 						}
 						else {
-							if (accArr[i] instanceof NormalAccount) {
-								((NormalAccount) accArr[i]).normalCalculate(depo);
+							if (acc instanceof NormalAccount) {
+								((NormalAccount) acc).normalCalculate(depo);
 							}
-							else if (accArr[i] instanceof HighCreditAccount) {
-								((HighCreditAccount) accArr[i]).highCalculate(depo);
+							else if (acc instanceof HighCreditAccount) {
+								((HighCreditAccount) acc).highCalculate(depo);
 							}
 						}
 					}
@@ -124,7 +151,7 @@ public class AccountManager {
 		}
 		
 		// 출금
-		public static void withdrawMoney() {
+		public void withdrawMoney() {
 			System.out.println("\n********** 출  금 **********");
 			
 			Scanner scanner = new Scanner(System.in);
@@ -139,8 +166,8 @@ public class AccountManager {
 			boolean isAcc = false;
 			
 			
-			for (int i = 0; i < accCnt; i++) {
-				if (accArr[i].getNumber().equals(accNum)) {
+			for (Account acc : hashSet) {
+				if (acc.getNumber().equals(accNum)) {
 					isAcc = true;
 					
 					try {
@@ -154,7 +181,7 @@ public class AccountManager {
 						else if (draw % 1000 != 0) {
 							System.out.println("\n[예외] 출금은 1000원 단위로 가능합니다.");
 						}
-						else if (draw > accArr[i].getBalance()) {
+						else if (draw > acc.getBalance()) {
 							System.out.println("\n##### 잔고가 부족합니다. #####");
 							System.out.println("### 금액 전체를 출금할까요? ###");
 							System.out.print("\nYes / No >>> ");
@@ -162,7 +189,7 @@ public class AccountManager {
 							String YoN = scanner.nextLine();
 							
 							if (YoN.equalsIgnoreCase("y")) {
-								accArr[i].setBalance(accArr[i].getBalance() - accArr[i].getBalance());
+								acc.setBalance(acc.getBalance() - acc.getBalance());
 								
 								System.out.println("\n#### 전체 금액 출금 완료 ####");
 								System.out.println("#### 현재 잔고는 0원입니다. ####");
@@ -172,7 +199,7 @@ public class AccountManager {
 							}
 						}
 						else {
-							accArr[i].setBalance(accArr[i].getBalance() - draw);
+							acc.setBalance(acc.getBalance() - draw);
 							
 							System.out.println("********* 출금 완료 *********");					
 						}
@@ -190,13 +217,42 @@ public class AccountManager {
 		}
 		
 		// 전체 계좌 정보 출력
-		public static void showAccInfo() {
+		public void showAccInfo() {
 			System.out.println("\n*** 계좌 정보 출력 ***");
 			
-			for (int i = 0; i < accCnt; i++) {
-				accArr[i].showAccount();
+			for (Account acc : hashSet) {
+				acc.showAccount();
 				System.out.println("******************");
 			}
 		}
-
+		
+		// 계좌 정보 삭제
+		public void deleteAccount() {
+			System.out.println("\n********* 계좌 정보 삭제 *********");
+			
+			Scanner scanner = new Scanner(System.in);
+			String accNum;
+			
+			System.out.println("\n-----------------------");
+			System.out.println("삭제할 계좌 번호를 입력해주세요.");
+			System.out.println("-----------------------");
+			
+			System.out.print("삭제할 계좌번호: ");
+			accNum = scanner.nextLine();
+			
+			
+			boolean isAcc = false;
+			
+			for (Account acc : hashSet) {
+				if (acc.getNumber().equals(accNum)) {
+					isAcc = true;
+					
+					hashSet.remove(acc);
+					System.out.println("\n*********** 삭제 완료 ***********");
+				}
+			}
+			if (!isAcc) {
+				System.out.println("\n***** 존재하지 않는 계좌입니다. *****");
+			}
+		}
 }

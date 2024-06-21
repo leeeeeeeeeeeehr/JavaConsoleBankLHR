@@ -8,13 +8,14 @@ import java.util.Scanner;
 public class BankingSystemMain {
 	
 	public static void main(String[] args) {
-			
 		Scanner scanner = new Scanner(System.in);
+
+		AccountManager manager = new AccountManager();
 		int choice = 0;
 		
 		while (true) {
 			try {
-				AccountManager.showMenu();
+				manager.showMenu();
 				choice = scanner.nextInt();
 				
 				if (choice < 1 || choice > 5) {
@@ -23,17 +24,21 @@ public class BankingSystemMain {
 
 				switch (choice) {
 				case ICustomDefine.MAKE:
-					AccountManager.makeAccount();
+					manager.makeAccount();
 					System.out.println();
 					break;
 				case ICustomDefine.DEPOSIT:
-					AccountManager.depositMoney();
+					manager.depositMoney();
 					break;
 				case ICustomDefine.WITHDRAW:
-					AccountManager.withdrawMoney();
+					manager.withdrawMoney();
 					break;
 				case ICustomDefine.INQUIRE:
-					AccountManager.showAccInfo();
+					manager.showAccInfo();
+					System.out.println();
+					break;
+				case ICustomDefine.DELETE:	
+					manager.deleteAccount();
 					System.out.println();
 					break;
 				case ICustomDefine.EXIT:

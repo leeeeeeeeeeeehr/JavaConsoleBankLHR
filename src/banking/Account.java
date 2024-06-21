@@ -38,4 +38,22 @@ abstract class Account {
 	
 	// 정보 출력용 메서드
 	public abstract void showAccount();
+	
+	// 이름과 계좌번호가 같으면 중복으로 처리
+	@Override
+	public int hashCode() {
+		int same = this.accNumber.hashCode();
+		return same;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		Account account = (Account) obj;
+				
+		if (account.accNumber.equals(this.accNumber)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 }

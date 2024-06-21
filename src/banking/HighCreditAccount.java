@@ -27,8 +27,6 @@ public class HighCreditAccount extends Account {
 		case ICustomDefine.gradeC:
 			highRate = 0.02;
 			break;
-		default:
-			System.out.println("\n[예외] A, B, C만 입력할 수 있습니다.");
 		}
 
 		double newBalance =
