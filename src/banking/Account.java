@@ -58,4 +58,12 @@ abstract class Account implements Serializable {
 			return false;
 		}
 	}
+	
+	// toString 오버라이드
+	private String toStirng() {
+		String str = 
+				"계좌번호: " + accNumber + ", 이름: " + name + ", 잔고: " + balance;
+		
+		return str;
+	}
 }

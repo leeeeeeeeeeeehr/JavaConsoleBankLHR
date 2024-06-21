@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.Iterator;
@@ -34,8 +35,8 @@ public class AccountManager {
 			System.out.println("3. 출  금  ");
 			System.out.print("4. 계좌 정보 출력   ");
 			System.out.println("5. 계좌 정보 삭제   ");
-			System.out.print("6. 저장   옵션    ");
-			System.out.println("7. 프로그램   종료");
+			System.out.print("6. 자동 저장 설정   ");
+			System.out.println("7. 프로그램  종료");
 			System.out.print("\n메뉴 선택 >>> ");
 		}
 		
@@ -260,7 +261,7 @@ public class AccountManager {
 				if (acc.getNumber().equals(accNum)) {
 					isAcc = true;
 					
-					hashSet.remove(acc);
+					itr.remove();
 					System.out.println("\n*********** 삭제 완료 ***********");
 				}
 			}
@@ -291,8 +292,6 @@ public class AccountManager {
 				ObjectInputStream in = 
 						new ObjectInputStream(new FileInputStream("src/banking/AccountInfo.obj"));
 				
-				System.out.println("*** 저장된 계좌 목록 ***");
-
 				while (true) {
 					try {
 						Account acc = (Account) in.readObject();
@@ -312,7 +311,51 @@ public class AccountManager {
 			}
 		}
 		
+		// 계좌 정보 txt 파일로 저장
 		public void autoSave() {
+			try {
+				PrintWriter out = new PrintWriter("src/banking/AutoSaveAccount.txt");
+				
+				for (Account acc : hashSet) {
+					out.print(acc);
+				}
+				System.out.println("\n****** 자동 저장 완료 ******");
+				System.out.println(">>> 6 입력 시 옵션 재선택 <<<");
+				out.close();
+			}
+			catch (IOException e) {
+				System.out.println("\n[예외] 자동 저장 실패");
+			}
+		}
+		public void autoOption(AutoSaver saver) {
+			Scanner scanner = new Scanner(System.in);
+
+			System.out.println("\n******** 자동 저장 ********");
+			System.out.println("1. ON             2. OFF");
+			
+			System.out.print("\n옵션 선택 >>> ");
+			int option = scanner.nextInt();
+			
+			if (option == 1) {
+				if (!saver.isAlive()) {
+					saver.setDaemon(true);
+					saver.start();
+					
+					System.out.println("****** 자동 저장 시작 ******\n");
+				}
+				else {
+					System.out.println("**** 이미 실행 중입니다. ****\n");
+				}
+			}
+			else if (option == 2) {
+				if (saver.isAlive()) {
+					saver.interrupt();
+					System.out.println("****** 자동 저장 종료 ******\n");
+				}
+			}
+			else {
+				System.out.println("\n[예외] 1, 2만 입력할 수 있습니다.\n");
+			}
 			
 		}
 }

@@ -4,7 +4,7 @@ package banking;
 public class MenuSelectException extends Exception {
 
 	public MenuSelectException() {
-		super("\n[예외] 1 ~ 6 사이의 숫자만 입력할 수 있습니다.\n");
+		super("\n[예외] 1 ~ 7 사이의 숫자만 입력할 수 있습니다.\n");
 	}
 	
 }
