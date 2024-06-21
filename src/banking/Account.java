@@ -1,7 +1,9 @@
 package banking;
 
+import java.io.Serializable;
+
 // 계좌 정보를 표현한 클래스
-abstract class Account {
+abstract class Account implements Serializable {
 	// 계좌 번호 (String), 이름 (String), 잔액 (int)
 	private String accNumber;
 	private String name;

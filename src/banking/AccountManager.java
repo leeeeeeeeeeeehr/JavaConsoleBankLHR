@@ -1,7 +1,14 @@
 package banking;
 
+import java.io.EOFException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashSet;
 import java.util.InputMismatchException;
+import java.util.Iterator;
 import java.util.Scanner;
 
 /* 컨트롤 클래스,
@@ -27,7 +34,8 @@ public class AccountManager {
 			System.out.println("3. 출  금  ");
 			System.out.print("4. 계좌 정보 출력   ");
 			System.out.println("5. 계좌 정보 삭제   ");
-			System.out.println("6. 프로그램 종료");
+			System.out.print("6. 저장   옵션    ");
+			System.out.println("7. 프로그램   종료");
 			System.out.print("\n메뉴 선택 >>> ");
 		}
 		
@@ -243,7 +251,12 @@ public class AccountManager {
 			
 			boolean isAcc = false;
 			
-			for (Account acc : hashSet) {
+			// for-each문은 요소 삭제를 지원하지 않으므로 Iterator 사용
+			Iterator<Account> itr = hashSet.iterator();
+			
+			while (itr.hasNext()) {
+				Account acc = itr.next();
+				
 				if (acc.getNumber().equals(accNum)) {
 					isAcc = true;
 					
@@ -254,5 +267,52 @@ public class AccountManager {
 			if (!isAcc) {
 				System.out.println("\n***** 존재하지 않는 계좌입니다. *****");
 			}
+		}
+		
+		// 직렬화
+		public void saveInfo() {
+			try {
+				ObjectOutputStream out =
+						new ObjectOutputStream(new FileOutputStream("src/banking/AccountInfo.obj"));
+				
+				for (Account acc : hashSet) {
+					out.writeObject(acc);
+				}
+				out.close();
+			}
+			catch (IOException e) {
+				System.out.println("[ERROR] 직렬화 실패 [ERROR]");
+			}
+		}
+		
+		// 역직렬화
+		public void readInfo() {
+			try {
+				ObjectInputStream in = 
+						new ObjectInputStream(new FileInputStream("src/banking/AccountInfo.obj"));
+				
+				System.out.println("*** 저장된 계좌 목록 ***");
+
+				while (true) {
+					try {
+						Account acc = (Account) in.readObject();
+						hashSet.add(acc);
+						
+						
+						acc.showAccount();
+						System.out.println("********************");
+					}
+					catch (EOFException e) {
+						break;
+					}
+				}
+			}
+			catch (Exception e) {
+				System.out.println("\n[ERROR] 역직렬화 실패 [ERROR]\n");
+			}
+		}
+		
+		public void autoSave() {
+			
 		}
 }

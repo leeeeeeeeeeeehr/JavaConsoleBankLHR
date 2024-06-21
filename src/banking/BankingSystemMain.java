@@ -13,12 +13,17 @@ public class BankingSystemMain {
 		AccountManager manager = new AccountManager();
 		int choice = 0;
 		
+		// 프로그램 시작 시 계좌 정보가 들어있는 파일 역직렬화
+		manager.readInfo();
+		System.out.println();
+		
 		while (true) {
 			try {
 				manager.showMenu();
 				choice = scanner.nextInt();
+				System.out.println("==============================");
 				
-				if (choice < 1 || choice > 5) {
+				if (choice < 1 || choice > 7) {
 					throw new MenuSelectException();
 				}
 
@@ -41,10 +46,15 @@ public class BankingSystemMain {
 					manager.deleteAccount();
 					System.out.println();
 					break;
+				case ICustomDefine.AUTO:
+					manager.autoSave();
+					break;
 				case ICustomDefine.EXIT:
 					System.out.println("\n=== 프로그램 종료 ===");
+					
+					// 프로그램 종료 시 계좌 정보를 파일로 직렬화
+					manager.saveInfo();
 					return;
-
 				}
 				
 			}
