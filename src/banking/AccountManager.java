@@ -51,6 +51,7 @@ public class AccountManager {
 			System.out.println("[계좌 선택]");
 			System.out.println("1. 보통 계좌");
 			System.out.println("2. 신용 신뢰 계좌");
+			System.out.println("3. 특판 계좌");
 			System.out.println("--------------");
 			System.out.print("선택 계좌: ");
 			choice = scanner.nextInt();
@@ -100,9 +101,49 @@ public class AccountManager {
 
 				// 입력받은 정보를 통해 인스턴스 생성
 				HighCreditAccount high = new HighCreditAccount(accNum, name, bal, rate, grade);
-				// 인스턴스 배열에 추가
-//				accArr[accCnt++] = high;
+				for (Account acc : hashSet) {
+					if (acc.equals(high)) {
+						System.out.println("\n### 중복 계좌가 발견되었습니다. ###");
+						System.out.println("#### 새롭게 저장하시겠습니까? ####");
+						System.out.print("\nYes / No >>> ");
+						
+						String YoN = scanner.nextLine();
+						
+						if (YoN.equalsIgnoreCase("y")) {
+							// 중복 계좌있으면 삭제 후 새로운 계좌 추가 (덮어쓰기와 같은 기능)
+							hashSet.remove(acc);
+							hashSet.add(high);
+							System.out.println("### 새로운 계좌 정보가 업데이트 됐습니다. ###");
+						}
+						else if (YoN.equalsIgnoreCase("n")) {
+							System.out.println("### 기존의 계좌 정보가 유지됩니다. ###");
+						}
+					}
+				}
 				hashSet.add(high);
+			}
+			else if (choice == 3) {
+				SpecialAccount special = new SpecialAccount(accNum, name, bal, rate);
+				for (Account acc : hashSet) {
+					if (acc.equals(special)) {
+						System.out.println("\n### 중복 계좌가 발견되었습니다. ###");
+						System.out.println("#### 새롭게 저장하시겠습니까? ####");
+						System.out.print("\nYes / No >>> ");
+						
+						String YoN = scanner.nextLine();
+						
+						if (YoN.equalsIgnoreCase("y")) {
+							// 중복 계좌있으면 삭제 후 새로운 계좌 추가 (덮어쓰기와 같은 기능)
+							hashSet.remove(acc);
+							hashSet.add(special);
+							System.out.println("### 새로운 계좌 정보가 업데이트 됐습니다. ###");
+						}
+						else if (YoN.equalsIgnoreCase("n")) {
+							System.out.println("### 기존의 계좌 정보가 유지됩니다. ###");
+						}
+					}
+				}
+				hashSet.add(special);
 			}
 			System.out.println("\n*** 계좌가 개설되었습니다. ***");
 		}
@@ -139,7 +180,10 @@ public class AccountManager {
 							System.out.println("\n[예외] 입금은 500원 단위로 가능합니다.");
 						}
 						else {
-							if (acc instanceof NormalAccount) {
+							if (acc instanceof SpecialAccount) {
+								((SpecialAccount) acc).specialCalculate(depo);
+							}
+							else if (acc instanceof NormalAccount) {
 								((NormalAccount) acc).normalCalculate(depo);
 							}
 							else if (acc instanceof HighCreditAccount) {
